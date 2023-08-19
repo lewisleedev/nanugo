@@ -108,9 +108,7 @@ class Builder:
             genanki.Package: A genanki.Package object containing all the decks and list of media files.
         """
         decks, media_list = map(list, zip(*builder_decks))
-        logger.info(
-            f"Total {len(decks)} deck(s) will be added to the package."
-        )
+        logger.info(f"Total {len(decks)} deck(s) will be added to the package.")
         pkg = genanki.Package(decks)
         pkg.media_files = itertools.chain(*media_list)
         return pkg
