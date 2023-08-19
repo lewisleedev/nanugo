@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "nanugo"
+version = "1.0.0a1"
+description = "Turn your handwritten pdf sheets to Anki deck."
+authors = ["Lewis Lee <shlewislee@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+genanki = "^0.13.0"
+Pillow = "^10.0.0"
+pypdfium2 = "^4.18.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+pytest = "^7.4.0"
+
+[tool.poetry.scripts]
+nanugo = 'nanugo.cli:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
