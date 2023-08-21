@@ -1,5 +1,9 @@
 # Nanugo
 
+![PyPI - Downloads](https://img.shields.io/pypi/dm/nanugo) ![PyPI - License](https://img.shields.io/pypi/l/nanugo) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nanugo)
+
+
+
 `Nanugo(나누고)` means "cut, and-" in Korean.
 
 Convert your Handwritten(or any) PDF files to Anki decks.
