@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Welcome to [Project Name]! We're excited that you're interested in contributing. Before you start, please take a moment to review the following guidelines.
+Welcome to nanugo! We're excited that you're interested in contributing. Before you start, please take a moment to review the following guidelines.
 
 ## Getting Started
 
