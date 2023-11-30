@@ -42,6 +42,7 @@ class Builder:
         vertical: bool = False,
         ratio: tuple = (0.5, 0.5),
         inversed: bool = False,
+        rows: int = 1
     ) -> BuilderDeck:
         """Builds Anki deck object with media file list.
 
@@ -55,6 +56,9 @@ class Builder:
         Returns:
             BuilderDeck: A BuilderDeck Object that has both genanki.Deck object and lists of paths to media files temporarily saved in tempdir.
         """
+        if rows > 1 and vertical == True:
+            logger.warning("Multiple row conversion selected. Vertical setting will be ignored.")
+
         # DeckID is also intended to be hardcoded.
         deck = genanki.Deck(1564947522, deck_name)
         logger.debug(f"Conversion started: {os.path.split(pdf_path)[-1]}")
@@ -62,39 +66,40 @@ class Builder:
         logger.debug(f"Splitting started: {os.path.split(pdf_path)[-1]}")
         split_pdf = list(
             map(
-                lambda page: images.split_page(page, vertical=vertical, ratio=ratio),
+                lambda page: images.split_page(page, vertical=vertical, ratio=ratio, rows=rows),
                 converted_pdf,
             )
         )
         logger.debug(f"Splitting finished: {os.path.split(pdf_path)[-1]}")
         media_list = []
 
-        for index, page in enumerate(
-            split_pdf
-        ):  # This is where you should probably add progress bar to.
-            q_side, a_side = page[::-1] if inversed else page
+        for set in split_pdf:
+            for index, page in enumerate(
+                set
+            ):  # This is where you should probably add progress bar to.
+                q_side, a_side = page[::-1] if inversed else page
 
-            q_side_path = os.path.join(
-                self.tempdir, f"{deck_name}_p{index}_q.jpeg"
-            )  # TODO: randomizing name might be needed.
-            a_side_path = os.path.join(self.tempdir, f"{deck_name}_p{index}_a.jpeg")
-            q_side.save(q_side_path)
-            logger.debug(f"Saved: {q_side_path}")
-            a_side.save(a_side_path)
-            logger.debug(f"Saved: {a_side_path}")
+                q_side_path = os.path.join(
+                    self.tempdir, f"{deck_name}_p{index}_q.jpeg"
+                )  # TODO: randomizing name might be needed.
+                a_side_path = os.path.join(self.tempdir, f"{deck_name}_p{index}_a.jpeg")
+                q_side.save(q_side_path)
+                logger.debug(f"Saved: {q_side_path}")
+                a_side.save(a_side_path)
+                logger.debug(f"Saved: {a_side_path}")
 
-            media_list.extend([q_side_path, a_side_path])
+                media_list.extend([q_side_path, a_side_path])
 
-            note = genanki.Note(
-                model=self.model,
-                fields=[
-                    f'<img src="{deck_name}_p{str(index)}_q.jpeg" />',
-                    f'<img src="{deck_name}_p{str(index)}_a.jpeg" />',
-                ],
-            )
+                note = genanki.Note(
+                    model=self.model,
+                    fields=[
+                        f'<div style="text-align: center;"><img src="{deck_name}_p{str(index)}_q.jpeg" /></div>',
+                        f'<div style="text-align: center;"><img src="{deck_name}_p{str(index)}_a.jpeg" /></div>',
+                    ],
+                )
 
-            deck.add_note(note)
-            logger.debug("Deck successfully created.")
+                deck.add_note(note)
+                logger.debug("Deck successfully created.")
 
         return BuilderDeck(deck, media_list)
 

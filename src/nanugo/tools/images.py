@@ -32,7 +32,7 @@ def convert_pdf(pdf_path: str) -> List[Dict[int, PIL.Image.Image]]:
 
 
 def split_page(
-    image: PIL.Image.Image, vertical: bool = False, ratio: tuple = (0.5, 0.5)
+    image: PIL.Image.Image, vertical: bool = False, ratio: tuple = (0.5, 0.5), rows: int = 1
 ) -> Tuple[PIL.Image.Image, PIL.Image.Image]:
     """Splits given PIL.Image.Image object into two.
 
@@ -52,16 +52,36 @@ def split_page(
             UserWarning,
         )
 
-    if vertical:
+    if rows == 1:
+        if vertical:
+            ratio_l, ratio_r = ratio
+            image_l = image.crop((0, 0, d_width * ratio_l, d_height))
+            image_r = image.crop((d_width * (1 - ratio_r), 0, d_width, d_height))
+
+            return [(image_l, image_r)]
+
+        else:
+            ratio_t, ratio_b = ratio
+            image_t = image.crop((0, 0, d_width, d_height * ratio_t))
+            image_b = image.crop((0, d_height * (1 - ratio_b), d_width, d_height))
+
+            return [(image_t, image_b)]
+        
+    elif rows > 1:
         ratio_l, ratio_r = ratio
-        image_l = image.crop((0, 0, d_width * ratio_l, d_height))
-        image_r = image.crop((d_width * (1 - ratio_r), 0, d_width, d_height))
+        row_height = d_height // rows
+        
+        image_sets = []
 
-        return (image_l, image_r)
+        for i in range(rows):
+            row_start = i * row_height
+            row_end = (i + 1) * row_height if i < rows - 1 else d_height
 
-    else:
-        ratio_t, ratio_b = ratio
-        image_t = image.crop((0, 0, d_width, d_height * ratio_t))
-        image_b = image.crop((0, d_height * (1 - ratio_b), d_width, d_height))
+            image_row = image.crop((0, row_start, d_width, row_end))
 
-        return (image_t, image_b)
+            image_row_l = image_row.crop((0, 0, d_width * ratio_l, row_height))
+            image_row_r = image_row.crop((d_width * (1 - ratio_r), 0, d_width, row_height))
+
+            image_sets.append((image_row_l, image_row_r))
+        
+        return image_sets

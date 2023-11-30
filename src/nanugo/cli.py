@@ -42,6 +42,7 @@ def main(args=None):
             ratio=tuple(parsed_args.ratio),
             vertical=parsed_args.vertical,
             inversed=parsed_args.inversed,
+            rows=parsed_args.rows
         )
         decks.append(deck)
 
@@ -125,6 +126,13 @@ def get_parser() -> argparse.ArgumentParser:
         action="version",
         version=pkg_resources.get_distribution("nanugo").version,
         help="Shows version and exits.",
+    )
+
+    parser.add_argument(
+        "--rows",
+        type=int,
+        default=1,
+        help="Number of rows for vertical splitting (default: 1). By having rows value bigger than 1, each row will only be cut vertically.",
     )
 
     return parser
