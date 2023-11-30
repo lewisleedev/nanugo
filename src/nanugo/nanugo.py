@@ -42,7 +42,7 @@ class Builder:
         vertical: bool = False,
         ratio: tuple = (0.5, 0.5),
         inversed: bool = False,
-        rows: int = 1
+        rows: int = 1,
     ) -> BuilderDeck:
         """Builds Anki deck object with media file list.
 
@@ -57,7 +57,9 @@ class Builder:
             BuilderDeck: A BuilderDeck Object that has both genanki.Deck object and lists of paths to media files temporarily saved in tempdir.
         """
         if rows > 1 and vertical == True:
-            logger.warning("Multiple row conversion selected. Vertical setting will be ignored.")
+            logger.warning(
+                "Multiple row conversion selected. Vertical setting will be ignored."
+            )
 
         # DeckID is also intended to be hardcoded.
         deck = genanki.Deck(1564947522, deck_name)
@@ -66,7 +68,9 @@ class Builder:
         logger.debug(f"Splitting started: {os.path.split(pdf_path)[-1]}")
         split_pdf = list(
             map(
-                lambda page: images.split_page(page, vertical=vertical, ratio=ratio, rows=rows),
+                lambda page: images.split_page(
+                    page, vertical=vertical, ratio=ratio, rows=rows
+                ),
                 converted_pdf,
             )
         )

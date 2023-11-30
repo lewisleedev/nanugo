@@ -42,7 +42,7 @@ def main(args=None):
             ratio=tuple(parsed_args.ratio),
             vertical=parsed_args.vertical,
             inversed=parsed_args.inversed,
-            rows=parsed_args.rows
+            rows=parsed_args.rows,
         )
         decks.append(deck)
 
