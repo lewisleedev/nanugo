@@ -47,7 +47,11 @@ $ nanugo your_apkg_name /path/with/pdf/files/*.pdf /path/with/single/file.pdf
 
 $ nanugo --ratio 0.6 0.4 --vertical --inversed your_apkg_name /path/to/pdf/file.pdf
 
-# You can read the source code or you can just ask for
+# You can make multiple set of cards from single page too.
+
+$ nanugo --rows 5 multiple_rows_pkg /path/to/pdf/file.pdf
+
+# For further help, you can read the source code or you can just ask for
 
 $ nanugo --help
 
@@ -66,6 +70,12 @@ pkg = builder.build_pkg([deck]) # It can take multiple decks, ergo list should b
 
 pkg.write_to_file(path)
 ```
+
+## Changelog
+
+### v1.0.1
+- You can now create multiple cards from a single page of pdf with `rows` option. 5 rows template is also provided.
+- All images are now centered with `text-align: center;` css snippet by default.
 
 ## Author
 - [@lewisleedev](https://github.com/lewisleedev)
