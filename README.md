@@ -73,8 +73,14 @@ pkg.write_to_file(path)
 
 ## Changelog
 
+### v1.0.2
+- Fixed `rows` option having issues with conflicting media file names.
+- You can now use `scale` and `width` options. `scale` option might help image quality of cards created with multiple rows feature.
+- Some docstring changes and refactors here and there.
+
+
 ### v1.0.1
-- You can now create multiple cards from a single page of pdf with `rows` option. 5 rows template is also provided.
+- ~~You can now create multiple cards from a single page of pdf with `rows` option. 5 rows template is also provided.~~ Broken. Use v1.0.2 instead.
 - All images are now centered with `text-align: center;` css snippet by default.
 
 ## Author
