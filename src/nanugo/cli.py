@@ -35,6 +35,8 @@ def main(args=None):
 
     file_name_only = lambda path: os.path.splitext(os.path.basename(path))[0]
 
+    image_width = parsed_args.width if parsed_args.width else 0
+
     for file in file_paths:
         deck = builder.build_deck(
             file_name_only(file),
@@ -43,6 +45,8 @@ def main(args=None):
             vertical=parsed_args.vertical,
             inversed=parsed_args.inversed,
             rows=parsed_args.rows,
+            image_width=image_width,
+            render_scale=parsed_args.scale,
         )
         decks.append(deck)
 
@@ -64,7 +68,7 @@ def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         allow_abbrev=True,
         description="Turn your handwritten pdf sheets to Anki deck(s).",
-        epilog="by @lewisleedev",
+        epilog="Created by @lewisleedev. If there's any problem, let me know at https://github.com/lewisleedev/nanugo/issues",
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
@@ -133,6 +137,18 @@ def get_parser() -> argparse.ArgumentParser:
         type=int,
         default=1,
         help="Number of rows for vertical splitting (default: 1). By having rows value bigger than 1, each row will only be cut vertically.",
+    )
+
+    parser.add_argument(
+        "--width",
+        type=int,
+        help="When given value greater than 1, images in question/answer side will be created with given value of css width property. Height will be set to auto. If you are trying to fix cards being too small, use higher scales value not width.",
+    )
+
+    parser.add_argument(
+        "--scale",
+        type=float,
+        help="Scale for Pdfium.PdfPage.render() to use during pdf->image rendering process. Defaults to 1. Note than bigger numbers may cause (significant) workload. If you're having issues with blurry images of cards, higher scale value might help (e.g. 1.5).",
     )
 
     return parser

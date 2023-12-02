@@ -4,11 +4,14 @@ import PIL, logging, warnings, os
 from ..log import logger
 
 
-def convert_pdf(pdf_path: str) -> List[Dict[int, PIL.Image.Image]]:
+def convert_pdf(
+    pdf_path: str, render_scale: float = 1
+) -> List[Dict[int, PIL.Image.Image]]:
     """Converts PDF files to PIL.Image.Image object.
 
     Args:
         pdf_path (str): Path for the pdf file to be converted
+        render_scale (int): Render scale to use with pdfium.PdfDocument.render() function.
 
     Returns:
         List[Dict[int, PIL.Image.Image]]: List of PIL.Image.Image objects.
@@ -19,7 +22,9 @@ def convert_pdf(pdf_path: str) -> List[Dict[int, PIL.Image.Image]]:
     page_indicies = [i for i in range(len(pdf_file))]
 
     # If your code shall be frozen into an executable, multiprocessing.freeze_support() needs to be called at the start of the if __name__ == "__main__": block if using this method.
-    renderer = pdf_file.render(pdfium.PdfBitmap.to_pil, page_indices=page_indicies)
+    renderer = pdf_file.render(
+        pdfium.PdfBitmap.to_pil, page_indices=page_indicies, scale=render_scale
+    )
 
     for image in renderer:
         result.append(image)
@@ -36,16 +41,17 @@ def split_page(
     vertical: bool = False,
     ratio: tuple = (0.5, 0.5),
     rows: int = 1,
-) -> Tuple[PIL.Image.Image, PIL.Image.Image]:
+) -> List[Tuple[PIL.Image.Image, PIL.Image.Image]]:
     """Splits given PIL.Image.Image object into two.
 
     Args:
         image (PIL.Image.Image): PIL.Image.Image object to be split
         vertical (bool, optional): if true, the image will be split vertically, not horizontally. Defaults to False.
         ratio (tuple, optional): ratio to which the image will be split. Defaults to (0.5, 0.5).
+        rows (int, optional): if given value greater than 1, pages will be split by multiple times horizontally and then each vertically.
 
     Returns:
-        Tuple[PIL.Image.Image, PIL.Image.Image]: A tuple of two PIL.Image.Image objects. First Image will going to be the top/left one by default.
+        List[Tuple[PIL.Image.Image, PIL.Image.Image]]: A list of tuple(s) of two PIL.Image.Image objects. First Image will going to be the top/left one by default.
     """
     d_width, d_height = image.size  # Get default sizes
 

@@ -1,7 +1,8 @@
-import genanki, tempfile, os, logging, itertools, shutil
+import genanki, tempfile, os, logging, itertools, shutil, sys
 from .tools import images
 from collections import namedtuple
 from .log import logger
+from .tools import utils
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class Builder:
             fields=[{"name": "QuestionSide"}, {"name": "AnswerSide"}],
             templates=[
                 {
-                    "name": "Card1",
+                    "name": "nanugo template",
                     "qfmt": "{{QuestionSide}}<br>",
                     "afmt": '{{FrontSide}}<hr id="answer">{{AnswerSide}}',
                 }
@@ -43,6 +44,8 @@ class Builder:
         ratio: tuple = (0.5, 0.5),
         inversed: bool = False,
         rows: int = 1,
+        image_width: int = 0,
+        render_scale: float = 1,
     ) -> BuilderDeck:
         """Builds Anki deck object with media file list.
 
@@ -52,19 +55,28 @@ class Builder:
             vertical (bool, optional): when enabled, pages will be split vertically and not horizontally. Defaults to False.
             ratio (tuple, optional): ratio to which each page will be split. If the sum of the ratios are not 1, it will raise a warning but not an error. If you intend to use non-sum-one numbers, you can ignore said warning. Defaults to (0.5, 0.5).
             inversed (bool, optional): when enabled, question side and answer side will be reversed, making top/left side the answer side and vice versa. Defaults to False.
+            rows (int, optional): When given value greater than 1, multiple cards will be created from a single page of the given pdf file. Note that only vertical cuts are supported.
+            image_width (int, optional): When given value greater than 1, images in question/answer side will be created with given value of css width property. Height will be set to auto. If you are trying to fix cards being too small, use higher scales value not width.
+            render_scale (float, optional): Scale for Pdfium.PdfPage.render() to use during pdf->image rendering process. Defaults to 1. Note than bigger numbers may cause (significant) workload. Recommended to use only when you're using multiple rows.
 
         Returns:
             BuilderDeck: A BuilderDeck Object that has both genanki.Deck object and lists of paths to media files temporarily saved in tempdir.
         """
+        if rows < 1:
+            logger.error("Number of row(s) cannot be smaller than 1!")
+            sys.exit()
+
         if rows > 1 and vertical == True:
             logger.warning(
                 "Multiple row conversion selected. Vertical setting will be ignored."
             )
 
+        logger.debug(image_width)
+
         # DeckID is also intended to be hardcoded.
         deck = genanki.Deck(1564947522, deck_name)
         logger.debug(f"Conversion started: {os.path.split(pdf_path)[-1]}")
-        converted_pdf = images.convert_pdf(pdf_path)
+        converted_pdf = images.convert_pdf(pdf_path, render_scale=render_scale)
         logger.debug(f"Splitting started: {os.path.split(pdf_path)[-1]}")
         split_pdf = list(
             map(
@@ -83,10 +95,14 @@ class Builder:
             ):  # This is where you should probably add progress bar to.
                 q_side, a_side = page[::-1] if inversed else page
 
+                card_uid = utils.get_hash()
+
                 q_side_path = os.path.join(
-                    self.tempdir, f"{deck_name}_p{index}_q.jpeg"
-                )  # TODO: randomizing name might be needed.
-                a_side_path = os.path.join(self.tempdir, f"{deck_name}_p{index}_a.jpeg")
+                    self.tempdir, f"{deck_name}_{card_uid}_q.jpeg"
+                )
+                a_side_path = os.path.join(
+                    self.tempdir, f"{deck_name}_{card_uid}_a.jpeg"
+                )
                 q_side.save(q_side_path)
                 logger.debug(f"Saved: {q_side_path}")
                 a_side.save(a_side_path)
@@ -94,16 +110,18 @@ class Builder:
 
                 media_list.extend([q_side_path, a_side_path])
 
+                w_parsed = str(image_width) + "px" if image_width > 0 else "auto"
+
                 note = genanki.Note(
                     model=self.model,
                     fields=[
-                        f'<div style="text-align: center;"><img src="{deck_name}_p{str(index)}_q.jpeg" /></div>',
-                        f'<div style="text-align: center;"><img src="{deck_name}_p{str(index)}_a.jpeg" /></div>',
+                        f'<div style="text-align: center;"><img style="width: {w_parsed}; height: auto; margin: auto;" src="{deck_name}_{card_uid}_q.jpeg" /></div>',
+                        f'<div style="text-align: center;"><img style="width: {w_parsed}; height: auto; margin: auto;" src="{deck_name}_{card_uid}_a.jpeg" /></div>',
                     ],
                 )
 
                 deck.add_note(note)
-                logger.debug("Deck successfully created.")
+            logger.debug("Deck successfully created.")
 
         return BuilderDeck(deck, media_list)
 
