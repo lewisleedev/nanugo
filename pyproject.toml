@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nanugo"
-version = "1.0.2"
+version = "1.0.3"
 description = "Turn your handwritten pdf sheets to Anki deck."
 authors = ["Lewis Lee <shlewislee@gmail.com>"]
 license = "GPL-3.0-or-later"

@@ -50,7 +50,7 @@ def main(args=None):
             inversed=parsed_args.inversed,
             rows=parsed_args.rows,
             image_width=image_width,
-            render_scale=parsed_args.scale,
+            render_scale=parsed_args.scale if parsed_args.scale else 1.0,
         )
         decks.append(deck)
 
