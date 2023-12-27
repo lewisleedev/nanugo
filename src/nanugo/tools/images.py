@@ -5,6 +5,7 @@ from ..log import logger
 
 __docformat__ = "google"
 
+
 def convert_pdf(
     pdf_path: str, render_scale: float = 1
 ) -> List[Dict[int, PIL.Image.Image]]:

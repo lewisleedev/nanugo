@@ -1,7 +1,9 @@
 import os, sys
 from glob import glob
 from ..log import logger
+
 __docformat__ = "google"
+
 
 def dir_path(path: str) -> None:
     """Check if given path actually exists.

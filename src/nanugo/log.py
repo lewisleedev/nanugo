@@ -2,6 +2,7 @@ import logging
 
 __docformat__ = "google"
 
+
 def setup_logger(level=logging.INFO):
     """Sets up logger. You don't want to change this unless needed."""
     logger = logging.getLogger(__name__)
