@@ -1,3 +1,7 @@
+"""
+CLI for nanugo. It's better to use `nanugo --help` than reading this.
+"""
+__docformat__ = "google"
 from glob import glob
 from .tools import validations
 from .log import logger

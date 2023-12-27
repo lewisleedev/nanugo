@@ -3,6 +3,7 @@ import pypdfium2 as pdfium
 import PIL, logging, warnings, os
 from ..log import logger
 
+__docformat__ = "google"
 
 def convert_pdf(
     pdf_path: str, render_scale: float = 1

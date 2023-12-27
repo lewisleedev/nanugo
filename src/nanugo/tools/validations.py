@@ -1,7 +1,7 @@
 import os, sys
 from glob import glob
 from ..log import logger
-
+__docformat__ = "google"
 
 def dir_path(path: str) -> None:
     """Check if given path actually exists.
@@ -18,12 +18,12 @@ def dir_path(path: str) -> None:
         raise NotADirectoryError(path)
 
 
-def file_exists_prompt(export_file_path, pkg_name):
+def file_exists_prompt(export_file_path: str, pkg_name: str):
     """Check if file exists. If exists, ask for user input.
 
-    Arguments:
-        export_file_path -- Path to be checked
-        pkg_name -- Name for the package.
+    Args:
+        export_file_path (str): Path to be checked
+        pkg_name (str): Name for the package.
     """
     if os.path.isfile(export_file_path):
         logger.debug(
@@ -42,8 +42,8 @@ def file_exists_prompt(export_file_path, pkg_name):
 def pdf_file_arg(arg):
     """Check if the given path argument(and plain path) is valid and according file(s) exist(s).
 
-    Arguments:
-        arg -- Path argument (can also contain wildcard)
+    Args:
+        arg : Path argument (can also contain wildcard)
 
     Raises:
         FileNotFoundError

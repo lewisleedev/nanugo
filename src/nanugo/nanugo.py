@@ -1,3 +1,9 @@
+"""
+Main module for `nanugo`. Using `Builder.build_deck` and `Builder.build_pkg` will suffice in most cases. Use with `genanki` package.
+"""
+
+__docformat__ = "google"
+
 import genanki, tempfile, os, logging, itertools, shutil, sys
 from .tools import images
 from collections import namedtuple
@@ -8,9 +14,10 @@ log = logging.getLogger(__name__)
 
 BuilderDeck = namedtuple("BuilderDeck", "deck media_list")
 BuilderDeck.__doc__ = """Builds Anki deck object with media file list.
+
 Args:
-    deck (genanki.Deck): built deck object
-    media_list (list): paths to media files
+    deck (genanki.Deck):built deck object
+    media_list (list):paths to media files
 """
 
 
@@ -58,9 +65,8 @@ class Builder:
             rows (int, optional): When given value greater than 1, multiple cards will be created from a single page of the given pdf file. Note that only vertical cuts are supported.
             image_width (int, optional): When given value greater than 1, images in question/answer side will be created with given value of css width property. Height will be set to auto. If you are trying to fix cards being too small, use higher scales value not width.
             render_scale (float, optional): Scale for Pdfium.PdfPage.render() to use during pdf->image rendering process. Defaults to 1. Note than bigger numbers may cause (significant) workload. Recommended to use only when you're using multiple rows.
-
         Returns:
-            BuilderDeck: A BuilderDeck Object that has both genanki.Deck object and lists of paths to media files temporarily saved in tempdir.
+            A `nanugo.BuilderDeck` object
         """
         if rows < 1:
             logger.error("Number of row(s) cannot be smaller than 1!")
