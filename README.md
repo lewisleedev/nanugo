@@ -73,6 +73,10 @@ pkg.write_to_file(path)
 
 ## Changelog
 
+### v1.0.3
+- Fixed a cli error occurred when no scale value was provided.
+- Some docstring changes
+
 ### v1.0.2
 - Fixed `rows` option having issues with conflicting media file names.
 - You can now use `scale` and `width` options. `scale` option might help image quality of cards created with multiple rows feature.
