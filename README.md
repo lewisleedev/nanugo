@@ -58,7 +58,7 @@ $ nanugo --help
 ```
 
 ### Python Module
-You can also use nanugo as a Python module to further suit your needs.
+You can also use nanugo as a Python module to further suit your needs. Read (not that good but better than nothing) [documentation](http://dev.lewislee.net/nanugo) for all the arguments and stuff.
 ```
 import nanugo
 
